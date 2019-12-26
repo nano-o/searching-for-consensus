@@ -2,14 +2,6 @@ some sig proc { }
 some sig State {  }
 
 // We encode the transition function of an object as a relation f:(State -> proc)->(State -> proc) (i.e. the object operations take processor ids as argument and return processor ids).
-// The predicate "function" below asserts that the relation f is a function
-pred function[f:(State -> proc)->(State -> proc)] {
-	all s, s2, s3 : State, p, p2,p3:proc | (s->p)->(s2->p2) in f && (s->p)->(s3->p3) in f => (s2 = s3 && p2 = p3)
-}
-// Predicate "enabled" asserts that the relation f is total.
-pred enabled[f:(State -> proc)->(State -> proc)] {
-	all s : State |  all p:proc | some s2 : State, p2 :proc | (s->p)->(s2->p2)  in f
-}
 
 // We look for an object that can solve (3,2)-set-consensus in a single shot.
 
@@ -37,6 +29,6 @@ pred no_cons[f:(State -> proc)->(State -> proc)] {
 }
 
 // Now find a transition function satisfying all the constraints (fixing the number of states)
-run { some f : (State -> proc) -> (State -> proc) | some init : State |
-	set_cons[f,init] && boundary[f,init] && no_cons[f] && enabled[f] && function[f]
+run { some f : (State -> proc) -> one (State -> proc) | some init : State |
+	set_cons[f,init] && boundary[f,init] && no_cons[f]
 } for 0 but exactly 8 State, exactly 3 proc
